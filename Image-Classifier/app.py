@@ -22,11 +22,6 @@ from util import base64_to_pil
 # Declare a flask app
 app = Flask(__name__)
 
-
-# You can use pretrained model from Keras
-# Check https://keras.io/applications/
-# or https://www.tensorflow.org/api_docs/python/tf/keras/applications
-
 from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
 model = MobileNetV2(weights='imagenet')
 
@@ -36,12 +31,6 @@ print('Model loaded. Check http://127.0.0.1:5000/')
 # Model saved with Keras model.save()
 MODEL_PATH = 'models/your_model.h5'
 
-# Load your own trained model
-# model = load_model(MODEL_PATH)
-# model._make_predict_function()          # Necessary
-# print('Model loaded. Start serving...')
-
-
 def model_predict(img, model):
     img = img.resize((224, 224))
 
@@ -50,8 +39,6 @@ def model_predict(img, model):
     # x = np.true_divide(x, 255)
     x = np.expand_dims(x, axis=0)
 
-    # Be careful how your trained model deals with the input
-    # otherwise, it won't make correct prediction!
     x = preprocess_input(x, mode='tf')
 
     preds = model.predict(x)
@@ -69,9 +56,6 @@ def predict():
     if request.method == 'POST':
         # Get the image from post request
         img = base64_to_pil(request.json)
-
-        # Save the image to ./uploads
-        # img.save("./uploads/image.png")
 
         # Make prediction
         preds = model_predict(img, model)
